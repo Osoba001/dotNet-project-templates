@@ -11,6 +11,7 @@ namespace Auth.Application.Dependency
     {
         public static IServiceCollection AppServiceCollection(this IServiceCollection services,string secretKey)
         {
+            services.AddScoped<IMediatKO,MediatKO>();
             services.AddScoped<IServiceWrapper, ServiceWrapper>();
             services.AddScoped<IAuthService, AuthService>();
             services.JWTService(secretKey);

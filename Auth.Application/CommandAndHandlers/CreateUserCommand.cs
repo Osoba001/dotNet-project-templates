@@ -2,6 +2,8 @@
 using Auth.Application.MediatR;
 using Auth.Application.Models;
 using Auth.Application.RepositoryContracts;
+using Auth.Application.Response;
+using Auth.Application.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +29,13 @@ namespace Auth.Application.Commands
             return result;
         }
         static string emailPattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+
+        public event EventHandler<UserArgs>? SoftDeleted;
+
+        internal virtual void OnCreated(UserArgs args)
+        {
+            SoftDeleted?.Invoke(this, args);
+        }
     }
 
     public class CreateUserHandler : ICommandHandler<CreateUserCommand>
@@ -43,7 +52,16 @@ namespace Auth.Application.Commands
             }
             UserModel userModel = new() { Email = email, Role = command.Role, UserName = command.UserName };
             service.AuthService.PasswordManager(command.Password,userModel);
-            return await service.UserRepo.Add(userModel);
+            var result= await service.UserRepo.AddAndReturn(userModel);
+            if(!result.IsSuccess)
+            {
+                response.AddError(result.ReasonPhrase);
+                return response;
+            }
+            command.OnCreated(result.Item!);
+            response.data=service.AuthService.TokenManager(result.Item!);
+            return response;
+
         }
     }
 }
