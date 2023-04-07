@@ -1,11 +1,6 @@
 ﻿using Auth.Application.AuthServices;
 using Auth.Application.RepositoryContracts;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auth.Application.MediatR
 {
@@ -17,7 +12,7 @@ namespace Auth.Application.MediatR
         {
             _serviceProvider = serviceProvider;
         }
-        private IUserRepo userRepo;
+        private IUserRepo? userRepo;
 
         public IUserRepo UserRepo
         {
@@ -30,7 +25,7 @@ namespace Auth.Application.MediatR
         }
 
 
-        private IAuthService authService;
+        private IAuthService? authService;
 
         public IAuthService AuthService
         {

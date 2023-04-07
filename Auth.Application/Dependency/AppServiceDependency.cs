@@ -14,6 +14,7 @@ namespace Auth.Application.Dependency
             services.AddScoped<IServiceWrapper, ServiceWrapper>();
             services.AddScoped<IAuthService, AuthService>();
             services.JWTService(secretKey);
+            services.AddAuthorization();
             return services;
         }
 

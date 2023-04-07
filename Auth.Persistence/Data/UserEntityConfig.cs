@@ -14,7 +14,7 @@ namespace Auth.Persistence.Data
         public void Configure(EntityTypeBuilder<UserModel> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Email).IsRequired().HasMaxLength(300);
+            builder.Property(x => x.Email).IsRequired().HasMaxLength(225);
             builder.Property(x => x.Role).IsRequired();
             builder.Property(x => x.UserName).IsRequired().HasMaxLength(100);
             builder.HasIndex(x => x.Email).IsUnique();

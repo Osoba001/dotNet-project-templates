@@ -66,9 +66,9 @@ namespace Auth.Application.AuthServices
 
         public bool VerifyPassword(string password, UserModel user)
         {
-            using var hmc = new HMACSHA512(user.PasswordSalt);
+            using var hmc = new HMACSHA512(user.PasswordSalt!);
             byte[] computed = hmc.ComputeHash(Encoding.ASCII.GetBytes(password));
-            return computed.SequenceEqual(user.PasswordHash);
+            return computed.SequenceEqual(user.PasswordHash!);
         }
     }
 }

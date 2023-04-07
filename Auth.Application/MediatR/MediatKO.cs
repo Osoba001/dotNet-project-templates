@@ -13,7 +13,7 @@ namespace Auth.Application.MediatR
         }
         public IServiceWrapper service => _serviceProvider.GetRequiredService<IServiceWrapper>();
 
-        public Task<KOActionResult> ExecuteCommandAsync<TCommandHandler, TCommand>(TCommand command)
+        public Task<KOActionResult> ExecuteCommandAsync<TCommand,TCommandHandler>(TCommand command)
             where TCommandHandler : ICommandHandler<TCommand>
             where TCommand : ICommand
         {
@@ -21,7 +21,7 @@ namespace Auth.Application.MediatR
             return handler.HandleAsync(command, service);
         }
 
-        public Task<KOActionResult> QueryAsync<TQueryHandler, TQuery>(TQuery query)
+        public Task<KOActionResult> QueryAsync<TQuery,TQueryHandler>(TQuery query)
             where TQueryHandler : IQueryHandler<TQuery>
             where TQuery : IQuery
         {

@@ -9,11 +9,11 @@ namespace Auth.Application.MediatR
 {
     public interface IMediatKO
     {
-        Task<KOActionResult> ExecuteCommandAsync<TCommandHandler, TCommand>(TCommand command)
+        Task<KOActionResult> ExecuteCommandAsync<TCommand,TCommandHandler>(TCommand command)
            where TCommand : ICommand
            where TCommandHandler : ICommandHandler<TCommand>;
 
-        Task<KOActionResult> QueryAsync<TQueryHandler, TQuery>(TQuery query)
+        Task<KOActionResult> QueryAsync<TQuery,TQueryHandler>(TQuery query)
             where TQuery : IQuery
             where TQueryHandler : IQueryHandler<TQuery>;
     }

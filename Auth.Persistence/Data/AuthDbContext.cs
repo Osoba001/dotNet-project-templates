@@ -4,7 +4,7 @@ using Utilities.Responses;
 
 namespace Auth.Persistence.Data
 {
-    internal class AuthDbContext:DbContext
+    public class AuthDbContext:DbContext
     {
         public AuthDbContext(DbContextOptions<AuthDbContext> options):base(options) { }
 
