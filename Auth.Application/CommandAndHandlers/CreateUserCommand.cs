@@ -1,15 +1,8 @@
 ﻿using Auth.Application.Constanst;
 using Auth.Application.MediatR;
 using Auth.Application.Models;
-using Auth.Application.RepositoryContracts;
-using Auth.Application.Response;
 using Auth.Application.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Utilities.Responses;
 
 namespace Auth.Application.Commands

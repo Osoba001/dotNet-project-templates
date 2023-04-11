@@ -26,7 +26,7 @@ namespace KO.WebAPI.Controllers.Auth
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand changePassword)
         {
-            return await ExecuteAsync<ChangePasswordCommand, ChangePasswordHandler>(changePassword);
+            return await ExecuteAsync<ChangePasswordCommand, ChangePasswordCommandHandler>(changePassword);
         }
 
         [HttpPost("forget-password")]

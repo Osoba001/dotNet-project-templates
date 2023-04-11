@@ -1,14 +1,11 @@
 ﻿using Auth.Application.MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Utilities.Responses;
 
 namespace Auth.Application.Commands
 {
+    /// <summary>
+    /// Change existing password Command.
+    /// </summary>
     public class ChangePasswordCommand : ICommand
     {
         public required Guid Id { get; set; }
@@ -20,9 +17,13 @@ namespace Auth.Application.Commands
             return result;
         }
     }
-
-    public class ChangePasswordHandler : ICommandHandler<ChangePasswordCommand>
+    /// <summary>
+    /// This class is the handler for ChangePasswordCommd. 
+    /// </summary>
+    public class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordCommand>
     {
+      
+       
         public async Task<KOActionResult> HandleAsync(ChangePasswordCommand command, IServiceWrapper service, CancellationToken cancellationToken = default)
         {
             var result=new KOActionResult();

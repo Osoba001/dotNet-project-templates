@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Auth.Application.Constanst
+namespace Utilities.Constants
 {
     public enum Role
     {
-        User, Admin, SupperAdmin 
+        User, Admin, SupperAdmin
     }
 }

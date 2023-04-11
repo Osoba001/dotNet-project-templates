@@ -3,7 +3,7 @@ using Utilities.Responses;
 
 namespace Auth.Application.MediatR
 {
-    public class MediatKO : IMediatKO
+    internal class MediatKO : IMediatKO
     {
         private readonly IServiceProvider _serviceProvider;
 
