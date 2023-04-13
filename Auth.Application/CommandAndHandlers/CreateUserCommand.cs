@@ -1,38 +1,91 @@
-﻿using Auth.Application.Constanst;
-using Auth.Application.MediatR;
+﻿using Auth.Application.MediatR;
 using Auth.Application.Models;
 using Auth.Application.Responses;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Utilities.Constants;
 using Utilities.Responses;
+using Utilities.Validations;
 
 namespace Auth.Application.Commands
 {
+    /// <summary>
+    /// Represents a command to create a new user.
+    /// </summary>
     public class CreateUserCommand : ICommand
     {
-        public readonly Role Role= Role.User;
+        /// <summary>
+        /// The role of the new user.
+        /// </summary>
+
+        [JsonIgnore]
+        public required Role Role { get; set; }
+
+        /// <summary>
+        /// The email address of the new user. This is a required field.
+        /// </summary>
         public required string Email { get; set; }
+
+        /// <summary>
+        /// The user name of the new user. This is a required field.
+        /// </summary>
         public required string UserName { get; set; }
+
+        /// <summary>
+        /// The password of the new user. This is a required field.
+        /// </summary>
         public required string Password { get; set; }
+
+        /// <summary>
+        /// Validates the command parameters.
+        /// </summary>
+        /// <returns>An instance of KOActionResult containing any validation errors.</returns>
         public KOActionResult Validate()
         {
-            var result= new KOActionResult();
-            if (!Regex.IsMatch(Email,emailPattern))
+            var result = new KOActionResult();
+
+            if (!Email.IsEmailValid())
                 result.AddError("Invalid email address.");
-            
+
             return result;
         }
-        static string emailPattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
 
+        /// <summary>
+        /// Occurs when the user is soft-deleted.
+        /// </summary>
         public event EventHandler<UserArgs>? SoftDeleted;
 
+        /// <summary>
+        /// Raises the SoftDeleted event.
+        /// </summary>
+        /// <param name="args">The user arguments.</param>
         internal virtual void OnCreated(UserArgs args)
         {
             SoftDeleted?.Invoke(this, args);
         }
     }
 
+    /// <summary>
+    /// Handles the CreateUserCommand to create a new user.
+    /// </summary>
     public class CreateUserHandler : ICommandHandler<CreateUserCommand>
     {
+        /// <summary>
+        /// Handles the CreateUserCommand asynchronously.
+        /// </summary>
+        /// <param name="command">The CreateUserCommand to handle.</param>
+        /// <param name="service">The service wrapper containing the necessary services and repositories.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>An instance of KOActionResult indicating the result of the command handling.</returns>
+        /// <remarks>
+        /// This method handles the CreateUserCommand asynchronously by first validating the email address and 
+        /// checking if it is already in use. If the email address is valid and not in use, a new UserModel object
+        /// is created with the specified email address, user name, and role, and the password is hashed using the 
+        /// service's PasswordManager method. The new user is then added to the user repository using the AddAndReturn 
+        /// method, and a token is generated using the service's TokenManager method. Finally, the OnCreated method 
+        /// of the CreateUserCommand is called with the newly created user as the argument, and an instance of 
+        /// KOActionResult is returned containing the token as the data property.
+        /// </remarks>
         public async Task<KOActionResult> HandleAsync(CreateUserCommand command, IServiceWrapper service, CancellationToken cancellationToken = default)
         {
             var response=new KOActionResult();

@@ -3,6 +3,7 @@ using Auth.Application.MediatR;
 using Auth.Application.QueryAndHandlers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Utilities.Constants;
 
 namespace KO.WebAPI.Controllers.Auth
 {
@@ -13,11 +14,24 @@ namespace KO.WebAPI.Controllers.Auth
         public UserController(IMediatKO mediator) : base(mediator) { }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] CreateUserCommand user)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand user)
         {
+            user.Role = Role.User;
             return await ExecuteSignAsync<CreateUserCommand, CreateUserHandler>(user);
         }
 
+        [HttpPost("admin")]
+        public async Task<IActionResult> CreateAddmin([FromBody] CreateUserCommand user)
+        {
+            user.Role = Role.Admin;
+            return await ExecuteSignAsync<CreateUserCommand, CreateUserHandler>(user);
+        }
+        [HttpPost("Super-admin")]
+        public async Task<IActionResult> CreateSuperAddmin([FromBody] CreateUserCommand user)
+        {
+            user.Role = Role.SuperAdmin;
+            return await ExecuteSignAsync<CreateUserCommand, CreateUserHandler>(user);
+        }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginCommand login)
         {

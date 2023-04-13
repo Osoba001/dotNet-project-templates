@@ -7,26 +7,50 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Utilities.Responses;
+using Utilities.Validations;
 
 namespace Auth.Application.Commands
 {
+    /// <summary>
+    /// Command for user login.
+    /// </summary>
     public class LoginCommand : ICommand
     {
+        /// <summary>
+        /// Email of the user to be authenticated.
+        /// </summary>
         public required string Email { get; set; }
+
+        /// <summary>
+        /// Password of the user to be authenticated.
+        /// </summary>
         public required string Password { get; set; }
+
+        /// <summary>
+        /// Validates the email address for the user.
+        /// </summary>
+        /// <returns>An instance of <see cref="KOActionResult"/> indicating the result of the validation.</returns>
         public KOActionResult Validate()
         {
             var result = new KOActionResult();
-            if (!Regex.IsMatch(Email, emailPattern))
+            if (!Email.IsEmailValid())
                 result.AddError("Invalid email address.");
 
             return result;
         }
-        static string emailPattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
     }
-
+    /// <summary>
+    /// Handles a <see cref="LoginCommand"/>.
+    /// </summary>
     public class LoginHandler : ICommandHandler<LoginCommand>
     {
+        /// <summary>
+        /// Handles a <see cref="LoginCommand"/>.
+        /// </summary>
+        /// <param name="command">The command to handle.</param>
+        /// <param name="service">The service wrapper.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A <see cref="KOActionResult"/> representing the result of the operation.</returns>
         public async Task<KOActionResult> HandleAsync(LoginCommand command, IServiceWrapper service, CancellationToken cancellationToken = default)
         {
             var result = new KOActionResult();

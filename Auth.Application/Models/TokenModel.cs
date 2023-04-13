@@ -6,10 +6,18 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Models
 {
+    /// <summary>
+    /// Represents a model for a JWT token and its refresh token.
+    /// </summary>
     public class TokenModel
     {
-       
+        /// <summary>
+        /// Gets or sets the access token value.
+        /// </summary>
         public required string AccessToken { get; set; }
+        /// <summary>
+        /// Gets or sets the refresh token value.
+        /// </summary>
         public required string RefreshToken { get; set; }
     }
 }

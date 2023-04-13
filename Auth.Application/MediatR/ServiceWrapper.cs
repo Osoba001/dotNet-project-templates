@@ -4,7 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Auth.Application.MediatR
 {
-    internal class ServiceWrapper : IServiceWrapper
+    /// <summary>
+    /// Provides access to instances of various services through the application's service provider.
+    /// </summary>
+    public class ServiceWrapper : IServiceWrapper
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -12,29 +15,31 @@ namespace Auth.Application.MediatR
         {
             _serviceProvider = serviceProvider;
         }
-        private IUserRepo? userRepo;
 
+        /// <summary>
+        /// Gets an instance of the user repository.
+        /// </summary>
         public IUserRepo UserRepo
         {
-            get 
+            get
             {
                 userRepo ??= _serviceProvider.GetRequiredService<IUserRepo>();
                 return userRepo;
             }
-
         }
+        private IUserRepo? userRepo;
 
-
-        private IAuthService? authService;
-
+        /// <summary>
+        /// Gets an instance of the authentication service.
+        /// </summary>
         public IAuthService AuthService
         {
-            get 
+            get
             {
                 authService ??= _serviceProvider.GetRequiredService<IAuthService>();
                 return authService;
             }
         }
-
+        private IAuthService? authService;
     }
 }

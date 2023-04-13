@@ -7,8 +7,17 @@ using System.Text;
 
 namespace Auth.Application.Dependency
 {
+    /// <summary>
+    /// Provides service registration for JWT authentication in ASP.NET Core applications.
+    /// </summary>
     public static class AppServiceDependency
     {
+        /// <summary>
+        /// Registers the required services for JWT authentication.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to which the services will be added.</param>
+        /// <param name="secretKey">The secret key used for JWT authentication.</param>
+        /// <returns>The modified <see cref="IServiceCollection"/> instance.</returns>
         public static IServiceCollection AppServiceCollection(this IServiceCollection services,string secretKey)
         {
             services.AddScoped<IMediatKO,MediatKO>();
@@ -19,6 +28,12 @@ namespace Auth.Application.Dependency
             return services;
         }
 
+        /// <summary>
+        /// Configures JWT authentication services.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> instance to which the services will be added.</param>
+        /// <param name="secretKey">The secret key used for JWT authentication.</param>
+        /// <returns>The modified <see cref="IServiceCollection"/> instance.</returns>
         private static IServiceCollection JWTService(this IServiceCollection services, string secretKey)
         {
             var key = Encoding.ASCII.GetBytes(secretKey);

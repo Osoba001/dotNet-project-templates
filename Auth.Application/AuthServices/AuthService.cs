@@ -13,11 +13,23 @@ namespace Auth.Application.AuthServices
     {
         private readonly IUserRepo _userRepo;
         private readonly AuthConfigData _configData;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthService"/> class.
+        /// </summary>
+        /// <param name="userRepo">The user repository.</param>
+        /// <param name="optionsConfigData">The authentication configuration data.</param>
         public AuthService(IUserRepo userRepo, IOptions<AuthConfigData> optionsConfigData)
         {
             _userRepo = userRepo;
             _configData = optionsConfigData.Value;
         }
+
+        /// <summary>
+        /// Hashes the provided password and sets the password hash and salt for the provided user.
+        /// </summary>
+        /// <param name="password">The password to be hashed.</param>
+        /// <param name="user">The user whose password hash and salt will be set.</param>
         public void PasswordManager(string password, UserModel user)
         {
             using var hmc = new HMACSHA512();
@@ -27,6 +39,11 @@ namespace Auth.Application.AuthServices
             user.PasswordSalt = passwordSalt;
         }
 
+        /// <summary>
+        /// Creates a new JWT access token and a refresh token for the provided user.
+        /// </summary>
+        /// <param name="user">The user for whom to generate the access and refresh tokens.</param>
+        /// <returns>A new <see cref="TokenModel"/> containing the JWT access token and refresh token.</returns>
         public async Task<TokenModel> TokenManager(UserModel user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -64,6 +81,12 @@ namespace Auth.Application.AuthServices
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
 
+        /// <summary>
+        /// Verifies whether the provided password matches the password hash and salt for the provided user.
+        /// </summary>
+        /// <param name="password">The password to be verified.</param>
+        /// <param name="user">The user whose password hash and salt will be used for verification.</param>
+        /// <returns>True if the provided password matches the password hash and salt for the provided user, false otherwise.</returns>
         public bool VerifyPassword(string password, UserModel user)
         {
             using var hmc = new HMACSHA512(user.PasswordSalt!);
