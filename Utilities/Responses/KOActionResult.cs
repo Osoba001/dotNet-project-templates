@@ -32,7 +32,7 @@ namespace Utilities.Responses
         /// Return all the error message in the error message collection as a single tring
         /// </summary>
         public string ReasonPhrase => GetRessErrors();
-        public bool IsSuccess { get; set; }
+        public bool IsSuccess { get; private set;}
         private List<string> ErrorMessagesList { get; set; }
 
         private string GetRessErrors()

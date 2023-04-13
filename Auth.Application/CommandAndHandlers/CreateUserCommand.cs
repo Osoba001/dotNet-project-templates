@@ -1,11 +1,13 @@
 ﻿using Auth.Application.MediatR;
 using Auth.Application.Models;
 using Auth.Application.Responses;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Utilities.Constants;
 using Utilities.Responses;
 using Utilities.Validations;
+
 
 namespace Auth.Application.Commands
 {
@@ -24,6 +26,7 @@ namespace Auth.Application.Commands
         /// <summary>
         /// The email address of the new user. This is a required field.
         /// </summary>
+        [EmailAddress]
         public required string Email { get; set; }
 
         /// <summary>
@@ -42,26 +45,21 @@ namespace Auth.Application.Commands
         /// <returns>An instance of KOActionResult containing any validation errors.</returns>
         public KOActionResult Validate()
         {
-            var result = new KOActionResult();
-
-            if (!Email.IsEmailValid())
-                result.AddError("Invalid email address.");
-
-            return result;
+            return new KOActionResult();
         }
 
         /// <summary>
         /// Occurs when the user is soft-deleted.
         /// </summary>
-        public event EventHandler<UserArgs>? SoftDeleted;
+        public event EventHandler<UserArgs>? CreatedUser;
 
         /// <summary>
-        /// Raises the SoftDeleted event.
+        /// Raises the Created user event.
         /// </summary>
         /// <param name="args">The user arguments.</param>
         internal virtual void OnCreated(UserArgs args)
         {
-            SoftDeleted?.Invoke(this, args);
+            CreatedUser?.Invoke(this, args);
         }
     }
 

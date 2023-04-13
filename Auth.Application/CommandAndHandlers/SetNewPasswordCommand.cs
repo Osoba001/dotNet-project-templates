@@ -36,11 +36,7 @@ namespace Auth.Application.Commands
         /// <returns>A KOActionResult object containing any validation errors</returns>
         public KOActionResult Validate()
         {
-            var result = new KOActionResult();
-            if (!Email.IsEmailValid())
-                result.AddError("Invalid email address.");
-
-            return result;
+            return new KOActionResult();
         }
     }
 

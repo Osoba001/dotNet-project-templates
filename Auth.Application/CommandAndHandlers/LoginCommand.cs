@@ -1,11 +1,5 @@
 ﻿using Auth.Application.MediatR;
-using Auth.Application.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using Utilities.Responses;
 using Utilities.Validations;
 
@@ -19,6 +13,7 @@ namespace Auth.Application.Commands
         /// <summary>
         /// Email of the user to be authenticated.
         /// </summary>
+        [EmailAddress]
         public required string Email { get; set; }
 
         /// <summary>
@@ -32,11 +27,7 @@ namespace Auth.Application.Commands
         /// <returns>An instance of <see cref="KOActionResult"/> indicating the result of the validation.</returns>
         public KOActionResult Validate()
         {
-            var result = new KOActionResult();
-            if (!Email.IsEmailValid())
-                result.AddError("Invalid email address.");
-
-            return result;
+           return new KOActionResult();
         }
     }
     /// <summary>

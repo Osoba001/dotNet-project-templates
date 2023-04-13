@@ -29,9 +29,7 @@ namespace Auth.Application.Commands
         /// <returns>A <see cref="KOActionResult"/> object that contains the validation result.</returns>
         public KOActionResult Validate()
         {
-            var result = new KOActionResult();
-            // TODO: Implement validation logic
-            return result;
+            return new KOActionResult();
         }
     }
 

@@ -16,6 +16,7 @@ namespace KO.WebAPI.Controllers.Auth
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand user)
         {
+
             user.Role = Role.User;
             return await ExecuteSignAsync<CreateUserCommand, CreateUserHandler>(user);
         }
@@ -63,6 +64,7 @@ namespace KO.WebAPI.Controllers.Auth
         [HttpDelete("hard-delete")]
         public async Task<IActionResult> HardDelete([FromBody] HardDeleteCommand hardDelete)
         {
+            //hardDelete.HardDelete+=
             return await ExecuteAsync<HardDeleteCommand, HardDeleteHandler>(hardDelete);
         }
         [HttpDelete("soft-delete")]
