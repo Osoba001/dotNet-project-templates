@@ -1,4 +1,5 @@
-﻿using Auth.Application.MediatR;
+﻿using Auth.Application.EventData;
+using Auth.Application.MediatR;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Responses;
 using Utilities.Validations;
@@ -15,7 +16,15 @@ namespace Auth.Application.Commands
         /// </summary>
         [EmailAddress]
         public required string Email { get; set; }
+        /// <summary>
+        /// Occurs when the user is Created User and return the user token model.
+        /// </summary>
+        public event EventHandler<string>? CreatedTokenModel;
 
+        internal virtual void OnAuthenticated(string refreshTokenArgs)
+        {
+            CreatedTokenModel?.Invoke(this, refreshTokenArgs);
+        }
         /// <summary>
         /// Password of the user to be authenticated.
         /// </summary>
@@ -48,13 +57,24 @@ namespace Auth.Application.Commands
             var user= await service.UserRepo.FindOneByPredicate(x=>x.Email==command.Email.ToLower().Trim());
 
             if (user is null)
+            {
                 result.AddError("Invalid login details.");
-            else if(!service.AuthService.VerifyPassword(command.Password,user))
-                result.AddError("Invalid login details.");
-            else
-                result.data = await service.AuthService.TokenManager(user);
+                return result;
+            }
 
+            if (!service.AuthService.VerifyPassword(command.Password, user))
+            {
+                result.AddError("Invalid login details.");
+                return result;
+            }
+
+            var tokenModel = await service.AuthService.TokenManager(user);
+            command.OnAuthenticated(tokenModel.RefreshToken);
+            result.data=tokenModel.AccessToken;
             return result;
+
+
+
         }
     }
 }

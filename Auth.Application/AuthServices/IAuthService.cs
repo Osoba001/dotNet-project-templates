@@ -1,4 +1,5 @@
-﻿using Auth.Application.Models;
+﻿using Auth.Application.EventData;
+using Auth.Application.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,8 @@ namespace Auth.Application.AuthServices
         /// Generates an access and refresh token for the given user.
         /// </summary>
         /// <param name="user">The user for which to generate the tokens.</param>
-        /// <returns>A <see cref="TokenModel"/> object containing the access and refresh tokens.</returns>
-        Task<TokenModel> TokenManager(UserModel user);
+        /// <returns>A <see cref="TokenModelArgs"/> object containing the access and refresh tokens.</returns>
+        Task<TokenModelArgs> TokenManager(UserModel user);
 
         /// <summary>
         /// Generates and sets the password salt and hash for the given user.

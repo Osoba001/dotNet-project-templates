@@ -44,7 +44,7 @@ namespace AuthModule.Test.AuthApplication.Handlers
         }
 
         [Fact]
-        public async Task HandleAsync_OldPasswordIncorrect_ReturnsError()
+        public async Task HandleAsync_ReturnReturnsError_WhenOldPasswordIncorrect()
         {
             // Arrange
            
@@ -62,24 +62,25 @@ namespace AuthModule.Test.AuthApplication.Handlers
             result.ReasonPhrase.Should().Contain("Old password is not correct.");
         }
 
-        //[Fact]
-        //public async Task HandleAsync_ValidCommand_ReturnsSuccess()
-        //{
-        //    //Arrange
-        //    mockService.Setup(s => s.UserRepo.FindById(It.IsAny<Guid>()))
-        //               .ReturnsAsync(Users[0]);
-        //    mockService.Setup(s => s.AuthService.VerifyPassword("password" + 0, Users[0]))
-        //               .Returns(true);
-        //    mockService.Setup(s => s.UserRepo.Update(Users[0]))
-        //        .ReturnsAsync(new Utilities.Responses.KOActionResult());
+        [Fact]
+        public async Task HandleAsync_ReturnSuccess_OldPasswordIsCorrect()
+        {
+            //Arrange
+            mockService.Setup(s => s.UserRepo.FindById(It.IsAny<Guid>()))
+                       .ReturnsAsync(Users[0]);
+            mockService.Setup(s => s.AuthService.VerifyPassword(It.IsAny<string>(), It.IsAny<UserModel>()))
+                       .Returns(true);
+            mockService.Setup(s=>s.UserRepo.Update(It.IsAny<UserModel>()))
+                .ReturnsAsync(new Utilities.Responses.KOActionResult());
+                
 
-        //    // Act
-        //    var result = await handler.HandleAsync(command, mockService.Object);
+            // Act
+            var result = await handler.HandleAsync(command, mockService.Object);
 
-        //    // Assert
-        //    result.Should().NotBeNull();
-        //    result.IsSuccess.Should().BeTrue();
-        //}
+            // Assert
+            result.Should().NotBeNull();
+            result.IsSuccess.Should().BeTrue();
+        }
     }
 
 }

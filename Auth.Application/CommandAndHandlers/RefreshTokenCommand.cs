@@ -1,4 +1,5 @@
-﻿using Auth.Application.MediatR;
+﻿using Auth.Application.EventData;
+using Auth.Application.MediatR;
 using Utilities.Responses;
 
 namespace Auth.Application.Commands
@@ -13,6 +14,13 @@ namespace Auth.Application.Commands
         /// </summary>
         public required string RefreshToken { get; set; }
 
+
+        public event EventHandler<string>? CreatedTokenModel;
+
+        internal virtual void OnAuthenticated(string args)
+        {
+            CreatedTokenModel?.Invoke(this, args);
+        }
         /// <summary>
         /// Validates the RefreshTokenCommand.
         /// </summary>
@@ -49,7 +57,9 @@ namespace Auth.Application.Commands
                 result.AddError("Session expired. Try login again.");
                 return result;
             }
-            result.data = await service.AuthService.TokenManager(user);
+            var token = await service.AuthService.TokenManager(user);
+            command.OnAuthenticated(token.RefreshToken);
+            result.data = token.AccessToken;
             return result;
         }
     }

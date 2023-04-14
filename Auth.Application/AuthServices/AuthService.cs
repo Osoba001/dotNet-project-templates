@@ -1,4 +1,5 @@
-﻿using Auth.Application.Models;
+﻿using Auth.Application.EventData;
+using Auth.Application.Models;
 using Auth.Application.RepositoryContracts;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace Auth.Application.AuthServices
 {
-    internal class AuthService : IAuthService
+    public class AuthService : IAuthService
     {
         private readonly IUserRepo _userRepo;
         private readonly AuthConfigData _configData;
@@ -43,8 +44,8 @@ namespace Auth.Application.AuthServices
         /// Creates a new JWT access token and a refresh token for the provided user.
         /// </summary>
         /// <param name="user">The user for whom to generate the access and refresh tokens.</param>
-        /// <returns>A new <see cref="TokenModel"/> containing the JWT access token and refresh token.</returns>
-        public async Task<TokenModel> TokenManager(UserModel user)
+        /// <returns>A new <see cref="TokenModelArgs"/> containing the JWT access token and refresh token.</returns>
+        public async Task<TokenModelArgs> TokenManager(UserModel user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var encodedKey = Encoding.ASCII.GetBytes(_configData.SecretKey);
@@ -70,7 +71,7 @@ namespace Auth.Application.AuthServices
             user.RefreshTokenExpireTime = DateTime.UtcNow.AddMinutes(_configData.RefreshTokenLifespanInMins);
 
             await _userRepo.Update(user);
-            return new TokenModel()
+            return new TokenModelArgs()
             {
                 AccessToken = tokenHandler.WriteToken(token),
                 RefreshToken = user.RefreshToken,

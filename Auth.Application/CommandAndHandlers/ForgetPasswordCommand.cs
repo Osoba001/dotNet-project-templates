@@ -23,7 +23,12 @@ namespace Auth.Application.Commands
         /// Validates the email address specified in the command.
         /// </summary>
         /// <returns>An instance of KOActionResult indicating the result of the validation.</returns>
-        
+        public event EventHandler<int>? ForgetPassword;
+
+        internal virtual void OnForgetPassword(int pin)
+        {
+            ForgetPassword?.Invoke(this, pin);
+        }
         public KOActionResult Validate()
         {
             return new KOActionResult();
@@ -52,19 +57,23 @@ namespace Auth.Application.Commands
             var user = await service.UserRepo.FindOneByPredicate(x => x.Email == command.Email.ToLower().Trim());
 
             if (user is null)
-                result.AddError("User not found.");
-            else
             {
-                int pin = RandomPin();
-                user.PasswordRecoveryPin = pin;
-                user.RecoveryPinCreatedTime = DateTime.UtcNow;
-                var rs = await service.UserRepo.Update(user);
-                if (!rs.IsSuccess)
-                    result.AddError(rs.ReasonPhrase);
-                else
-                    result.data = pin;
+                result.AddError("User not found.");
+                return result;
             }
+
+            int pin = RandomPin();
+            user.PasswordRecoveryPin = pin;
+            user.RecoveryPinCreatedTime = DateTime.UtcNow;
+            var rs = await service.UserRepo.Update(user);
+            if (!rs.IsSuccess)
+            {
+                result.AddError(rs.ReasonPhrase);
+                return result;
+            }
+            command.OnForgetPassword(pin);
             return result;
+
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Auth.Application.Commands;
+using Auth.Application.EventData;
 using Auth.Application.MediatR;
 using Auth.Application.QueryAndHandlers;
 using Microsoft.AspNetCore.Http;
@@ -16,27 +17,31 @@ namespace KO.WebAPI.Controllers.Auth
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand user)
         {
-
+            //user.CreatedUser += User_CreatedUser;
+            user.CreatedTokenModel += ManageRefreshToken;
             user.Role = Role.User;
-            return await ExecuteSignAsync<CreateUserCommand, CreateUserHandler>(user);
+            return await ExecuteAsync<CreateUserCommand, CreateUserHandler>(user);
         }
 
         [HttpPost("admin")]
         public async Task<IActionResult> CreateAddmin([FromBody] CreateUserCommand user)
         {
             user.Role = Role.Admin;
-            return await ExecuteSignAsync<CreateUserCommand, CreateUserHandler>(user);
+            user.CreatedTokenModel += ManageRefreshToken;
+            return await ExecuteAsync<CreateUserCommand, CreateUserHandler>(user);
         }
         [HttpPost("Super-admin")]
         public async Task<IActionResult> CreateSuperAddmin([FromBody] CreateUserCommand user)
         {
             user.Role = Role.SuperAdmin;
-            return await ExecuteSignAsync<CreateUserCommand, CreateUserHandler>(user);
+            user.CreatedTokenModel += ManageRefreshToken;
+            return await ExecuteAsync<CreateUserCommand, CreateUserHandler>(user);
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginCommand login)
         {
-            return await ExecuteSignAsync<LoginCommand, LoginHandler>(login);
+            login.CreatedTokenModel += ManageRefreshToken;
+            return await ExecuteAsync<LoginCommand, LoginHandler>(login);
         }
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand changePassword)
@@ -85,7 +90,9 @@ namespace KO.WebAPI.Controllers.Auth
             var refreshToken = Request.Cookies["refreshToken"];
             if (refreshToken == null)
                 return BadRequest("Refresh token has expired or has never be set.");
-            return await RefreshTokenAsync<RefreshTokenCommand, RefreshTokenHandler>(new RefreshTokenCommand() { RefreshToken = refreshToken });
+            var refreshTokenCmd= new RefreshTokenCommand() { RefreshToken = refreshToken };
+            refreshTokenCmd.CreatedTokenModel += ManageRefreshToken;
+            return await ExecuteAsync<RefreshTokenCommand, RefreshTokenHandler>(refreshTokenCmd);
         }
 
         [HttpGet]
@@ -106,5 +113,9 @@ namespace KO.WebAPI.Controllers.Auth
             return await QueryAsync<UserById, UserByIdQueryHadler>(new UserById() { Id = id });
         }
 
+        private void ManageRefreshToken(object? sender, string e)
+        {
+            Response.Cookies.Append("refreshToken", e, new CookieOptions { HttpOnly = true });
+        }
     }
 }

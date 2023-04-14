@@ -17,7 +17,8 @@ namespace Presentation.Test.Controllers.Auth
     {
         private readonly Mock<IMediatKO> _mediatorMock;
         private readonly KOControllerBase _controller;
-
+        private readonly SoftDeleteCommand command = new() { Id = Guid.NewGuid() };
+        private readonly UserById query = new() { Id = Guid.NewGuid() };
         public KOControllerBaseTest()
         {
             _mediatorMock = new Mock<IMediatKO>();
@@ -28,7 +29,7 @@ namespace Presentation.Test.Controllers.Auth
         public async void ExecuteAsync_ReturnBadRequestAndErroMessage_WhenCommandIsNotValid()
         {
             //Arrange
-            var command = new SoftDeleteCommand { Id = Guid.NewGuid() };
+           
             var response = new KOActionResult();
             response.AddError("Invalid command.");
             _mediatorMock
@@ -47,7 +48,6 @@ namespace Presentation.Test.Controllers.Auth
         public async void ExecuteAsync_ValidCommand_ReturnsOkWithResultData()
         {
             //Arrange
-            var command = new SoftDeleteCommand { Id = Guid.NewGuid() };
             var response = new KOActionResult();
             _mediatorMock.Setup(x => x.ExecuteCommandAsync<SoftDeleteCommand, SoftDeleteHandler>(command))
                 .ReturnsAsync(response);
@@ -65,7 +65,6 @@ namespace Presentation.Test.Controllers.Auth
         public async void QueryAsync_ReturnBadRequestAndErrorMessage_WhenResponseIsNotSuccessFul()
         {
             //Arrange
-            var query=new UserById() { Id = Guid.NewGuid() };
             var response = new KOActionResult();
             response.AddError("Not successfull.");
 
@@ -84,7 +83,6 @@ namespace Presentation.Test.Controllers.Auth
         public async void QueryAsync_ReturnOkResultAndTheData_WhenResponseIsSuccessFul()
         {
             //Arrange
-            var query = new UserById() { Id = Guid.NewGuid() };
             var response = new KOActionResult();
             response.data=Guid.NewGuid().ToString();
 

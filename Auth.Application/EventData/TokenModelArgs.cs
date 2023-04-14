@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Auth.Application.Models
+namespace Auth.Application.EventData
 {
     /// <summary>
     /// Represents a model for a JWT token and its refresh token.
     /// </summary>
-    public class TokenModel
+    public class TokenModelArgs:EventArgs
     {
         /// <summary>
         /// Gets or sets the access token value.

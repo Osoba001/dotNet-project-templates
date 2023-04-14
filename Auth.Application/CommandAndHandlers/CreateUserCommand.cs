@@ -1,4 +1,5 @@
-﻿using Auth.Application.MediatR;
+﻿using Auth.Application.EventData;
+using Auth.Application.MediatR;
 using Auth.Application.Models;
 using Auth.Application.Responses;
 using System.ComponentModel.DataAnnotations;
@@ -21,7 +22,7 @@ namespace Auth.Application.Commands
         /// </summary>
 
         [JsonIgnore]
-        public required Role Role { get; set; }
+        public  Role Role { get; set; }
 
         /// <summary>
         /// The email address of the new user. This is a required field.
@@ -49,17 +50,21 @@ namespace Auth.Application.Commands
         }
 
         /// <summary>
-        /// Occurs when the user is soft-deleted.
+        /// Occurs when the user is Created User and return the created user.
         /// </summary>
         public event EventHandler<UserArgs>? CreatedUser;
-
+        /// <summary>
+        /// Occurs when the user is Created User and return the user token model.
+        /// </summary>
+        public event EventHandler<string>? CreatedTokenModel;
         /// <summary>
         /// Raises the Created user event.
         /// </summary>
-        /// <param name="args">The user arguments.</param>
-        internal virtual void OnCreated(UserArgs args)
+        /// <param name="UserArgs">The user arguments.</param>
+        internal virtual void OnCreated(UserArgs UserArgs, string refrestoken)
         {
-            CreatedUser?.Invoke(this, args);
+            CreatedUser?.Invoke(this, UserArgs);
+            CreatedTokenModel?.Invoke(this, refrestoken);
         }
     }
 
@@ -102,10 +107,10 @@ namespace Auth.Application.Commands
                 response.AddError(result.ReasonPhrase);
                 return response;
             }
-            command.OnCreated(result.Item!);
-            response.data=service.AuthService.TokenManager(result.Item!);
+            var tokens = await service.AuthService.TokenManager(result.Item!);
+            command.OnCreated(result.Item!, tokens.RefreshToken);
+            response.data= tokens.AccessToken;
             return response;
-
         }
     }
 }
