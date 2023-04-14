@@ -4,7 +4,9 @@ using Auth.Application.Models;
 using Auth.Application.QueryAndHandlers;
 using FluentAssertions;
 using KO.WebAPI.Controllers.Auth;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.VisualBasic;
 using Moq;
 using Utilities.Responses;
@@ -21,7 +23,7 @@ namespace Presentation.Test.Controllers.Auth
             _mediatorMock = new Mock<IMediatKO>();
             _controller = new KOControllerBase(_mediatorMock.Object);
         }
-
+        //ExecuteAsync
         [Fact]
         public async void ExecuteAsync_ReturnBadRequestAndErroMessage_WhenCommandIsNotValid()
         {
@@ -57,6 +59,8 @@ namespace Presentation.Test.Controllers.Auth
             actionResult.Should().BeOfType<OkObjectResult>();
         }
 
+
+        //QueryAsync
         [Fact]
         public async void QueryAsync_ReturnBadRequestAndErrorMessage_WhenResponseIsNotSuccessFul()
         {
