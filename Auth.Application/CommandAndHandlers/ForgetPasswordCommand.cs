@@ -23,11 +23,11 @@ namespace Auth.Application.Commands
         /// Validates the email address specified in the command.
         /// </summary>
         /// <returns>An instance of KOActionResult indicating the result of the validation.</returns>
-        public event EventHandler<int>? ForgetPassword;
+        public event EventHandler<int>? ForgetPasswordPin;
 
         internal virtual void OnForgetPassword(int pin)
         {
-            ForgetPassword?.Invoke(this, pin);
+            ForgetPasswordPin?.Invoke(this, pin);
         }
         public KOActionResult Validate()
         {
@@ -58,13 +58,13 @@ namespace Auth.Application.Commands
 
             if (user is null)
             {
-                result.AddError("User not found.");
+                result.AddError(UserNotFound);
                 return result;
             }
 
             int pin = RandomPin();
             user.PasswordRecoveryPin = pin;
-            user.RecoveryPinCreatedTime = DateTime.UtcNow;
+            user.RecoveryPinCreationTime = DateTime.UtcNow;
             var rs = await service.UserRepo.Update(user);
             if (!rs.IsSuccess)
             {

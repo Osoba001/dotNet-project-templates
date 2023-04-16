@@ -55,14 +55,14 @@ namespace Auth.Application.Commands
             // If the user is not found, add an error to the result and return it
             if (user == null)
             {
-                result.AddError("User not found.");
+                result.AddError(UserNotFound);
                 return result;
             }
 
             // Verify the old password
             if (!service.AuthService.VerifyPassword(command.OldPassword, user))
             {
-                result.AddError("Old password is not correct.");
+                result.AddError(InvalidPassword);
                 return result;
             }
 

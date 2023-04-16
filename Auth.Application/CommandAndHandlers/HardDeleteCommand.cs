@@ -62,7 +62,7 @@ namespace Auth.Application.Commands
             var user = await service.UserRepo.FindById(command.Id);
             if (user is null)
             {
-                result.AddError("User not found.");
+                result.AddError(UserNotFound);
                 return result;
             }
             var res = await service.UserRepo.Delete(user);

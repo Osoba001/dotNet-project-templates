@@ -1,31 +1,24 @@
 ﻿using Auth.Application.Commands;
-using Auth.Application.EventData;
 using Auth.Application.MediatR;
 using Auth.Application.Models;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AuthModule.Test.AuthApplication.Handlers
+namespace AuthModule.Test.AuthApplication.UserHandlers
 {
-    public class LoginHandlerTest
+    public class RefreshTokenHandlerTest
     {
         private readonly Mock<IServiceWrapper> mockService;
-        private readonly LoginCommand command = new() { Email=Guid.NewGuid().ToString(),Password= Guid.NewGuid().ToString() };
-        private readonly LoginHandler handler = new();
-        public LoginHandlerTest()
+        private readonly RefreshTokenCommand command = new() { RefreshToken = Guid.NewGuid().ToString(), };
+        private readonly RefreshTokenHandler handler = new();
+        public RefreshTokenHandlerTest()
         {
             mockService = new Mock<IServiceWrapper>();
         }
 
-
         [Fact]
-        public async void HandlerAsync_ReturnsError_WhenEmailNotFound()
+        public async void HandlerAsync_ReturnsError_WhenUserNotFound()
         {
             //Arrange
             mockService.Setup(s => s.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()))
@@ -37,17 +30,18 @@ namespace AuthModule.Test.AuthApplication.Handlers
             //Assert
             result.Should().NotBeNull();
             result.IsSuccess.Should().BeFalse();
-            result.ReasonPhrase.Should().Contain("Invalid login details.");
+            result.ReasonPhrase.Should().Contain(InvalidToken);
+            mockService.Verify(s => s.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()), Times.Once());
         }
 
         [Fact]
-        public async void HandlerAsync_ReturnsError_WhenPasswordIsInvalid()
+        public async void HandlerAsync_ReturnsError_WhenTokenHasExpired()
         {
             //Arrange
+            var user = Users[0];
+            user.RefreshTokenExpireTime = DateTime.UtcNow.AddMinutes(-1);
             mockService.Setup(s => s.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()))
-                .ReturnsAsync(Users[0]);
-            mockService.Setup(s => s.AuthService.VerifyPassword(It.IsAny<string>(), It.IsAny<UserModel>()))
-                .Returns(false);
+                .ReturnsAsync(user);
 
             //Act
             var result = await handler.HandleAsync(command, mockService.Object);
@@ -55,16 +49,17 @@ namespace AuthModule.Test.AuthApplication.Handlers
             //Assert
             result.Should().NotBeNull();
             result.IsSuccess.Should().BeFalse();
-            result.ReasonPhrase.Should().Contain("Invalid login details.");
+            result.ReasonPhrase.Should().Contain(SessionExpired);
+            mockService.Verify(s => s.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()), Times.Once());
         }
         [Fact]
-        public async void HandlerAsync_ReturnsTokens_WhenEmailIsFoundAndPasswordIsInvalid()
+        public async void HandlerAsync_ReturnsAccessToken_WhenFor_A_ValidRefreshToken()
         {
             //Arrange
+            var user = Users[0];
+            user.RefreshTokenExpireTime = DateTime.UtcNow.AddMinutes(1);
             mockService.Setup(s => s.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()))
-                .ReturnsAsync(Users[0]);
-            mockService.Setup(s => s.AuthService.VerifyPassword(It.IsAny<string>(), It.IsAny<UserModel>()))
-                .Returns(true);
+                .ReturnsAsync(user);
             mockService.Setup(s => s.AuthService.TokenManager(It.IsAny<UserModel>()))
                 .ReturnsAsync(tokenModel);
 
@@ -74,7 +69,9 @@ namespace AuthModule.Test.AuthApplication.Handlers
             //Assert
             result.Should().NotBeNull();
             result.IsSuccess.Should().BeTrue();
-            result.data.Should().BeEquivalentTo(tokenModel.AccessToken);
+            result.data.Should().Be(tokenModel.AccessToken);
+            mockService.Verify(s => s.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()), Times.Once());
+            mockService.Verify(s => s.AuthService.TokenManager(It.IsAny<UserModel>()), Times.Once());
         }
     }
 }

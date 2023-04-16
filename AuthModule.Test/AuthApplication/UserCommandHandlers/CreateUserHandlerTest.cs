@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Utilities.Constants;
 using Utilities.Responses;
 
-namespace AuthModule.Test.AuthApplication.Handlers
+namespace AuthModule.Test.AuthApplication.UserHandlers
 {
     public class CreateUserHandlerTest
     {
@@ -22,14 +22,14 @@ namespace AuthModule.Test.AuthApplication.Handlers
         CreateUserHandler handler = new();
         public CreateUserHandlerTest()
         {
-            mockService= new Mock<IServiceWrapper>();
+            mockService = new Mock<IServiceWrapper>();
         }
         [Fact]
         public async Task HandleAsync_ReturnError_WhenEmailAlreadyExists()
         {
             // Arrange
             //var service = Mock.Of<IServiceWrapper>(s => s.UserRepo.FindOneByPredicate(It.IsAny<Func<UserModel, bool>>()) == Task.FromResult(existingUser));
-            mockService.Setup(x=>x.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()))
+            mockService.Setup(x => x.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()))
                 .ReturnsAsync(Users[0]);
 
             // Act
@@ -37,7 +37,8 @@ namespace AuthModule.Test.AuthApplication.Handlers
 
             // Assert
             result.Should().NotBeNull();
-            result.ReasonPhrase.Should().Contain("Email is already in used.");
+            result.ReasonPhrase.Should().Contain(EmailAlreadyExist);
+            mockService.Verify(x => x.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()), Times.Once());
         }
 
         [Fact]
@@ -62,9 +63,9 @@ namespace AuthModule.Test.AuthApplication.Handlers
             resToken.Should().NotBeNull();
             resToken.Should().BeEquivalentTo(tokenModel.AccessToken);
             result.ReasonPhrase.Should().BeNullOrEmpty();
-            //mockService.Verify(s => s.AuthService.PasswordManager(command.Password, newUser), Times.Once);
-            //mockService.Verify(s => s.UserRepo.AddAndReturn(newUser), Times.Once);
-            //mockService.Verify(s => s.AuthService.TokenManager(newUser), Times.Once);
+            mockService.Verify(s => s.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()), Times.Once());
+            mockService.Verify(s => s.UserRepo.AddAndReturn(It.IsAny<UserModel>()), Times.Once);
+            mockService.Verify(s => s.AuthService.TokenManager(It.IsAny<UserModel>()), Times.Once);
         }
     }
 }

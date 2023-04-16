@@ -60,12 +60,12 @@ namespace Auth.Application.Commands
 
             if (user is null || user.PasswordRecoveryPin!=command.RecoveryPin)
             {
-                result.AddError("user not found.");
+                result.AddError(UserNotFound);
                 return result;
             }
             if (user.AllowSetNewPassword< DateTime.UtcNow.AddMinutes(-10))
             {
-                result.AddError("Session expired.");
+                result.AddError(SessionExpired);
                 return result;
             }
             service.AuthService.PasswordManager(command.Password, user);

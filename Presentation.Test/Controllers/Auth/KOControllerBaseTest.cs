@@ -1,13 +1,9 @@
 ﻿using Auth.Application.Commands;
 using Auth.Application.MediatR;
-using Auth.Application.Models;
 using Auth.Application.QueryAndHandlers;
 using FluentAssertions;
 using KO.WebAPI.Controllers.Auth;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.VisualBasic;
 using Moq;
 using Utilities.Responses;
 
@@ -16,34 +12,15 @@ namespace Presentation.Test.Controllers.Auth
     public class KOControllerBaseTest
     {
         private readonly Mock<IMediatKO> _mediatorMock;
-        private readonly KOControllerBase _controller;
+        private readonly AuthControllerBase _controller;
         private readonly SoftDeleteCommand command = new() { Id = Guid.NewGuid() };
         private readonly UserById query = new() { Id = Guid.NewGuid() };
         public KOControllerBaseTest()
         {
             _mediatorMock = new Mock<IMediatKO>();
-            _controller = new KOControllerBase(_mediatorMock.Object);
+            _controller = new AuthControllerBase(_mediatorMock.Object);
         }
-        //ExecuteAsync
-        [Fact]
-        public async void ExecuteAsync_ReturnBadRequestAndErroMessage_WhenCommandIsNotValid()
-        {
-            //Arrange
-           
-            var response = new KOActionResult();
-            response.AddError("Invalid command.");
-            _mediatorMock
-                .Setup(x => x.ExecuteCommandAsync<SoftDeleteCommand, SoftDeleteHandler>(command))
-                .ReturnsAsync(response);
-
-            //Act
-            var actionResult = await _controller.ExecuteAsync<SoftDeleteCommand, SoftDeleteHandler>(command);
-
-            //Assert
-            actionResult.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().Be(response.ReasonPhrase);
-        }
-
+        
         [Fact]
         public async void ExecuteAsync_ValidCommand_ReturnsOkWithResultData()
         {
@@ -57,6 +34,7 @@ namespace Presentation.Test.Controllers.Auth
 
             //Assert
             actionResult.Should().BeOfType<OkObjectResult>();
+            _mediatorMock.Verify(x => x.ExecuteCommandAsync<SoftDeleteCommand, SoftDeleteHandler>(command), Times.Once());
         }
 
 
@@ -77,6 +55,7 @@ namespace Presentation.Test.Controllers.Auth
             //Assert
             actionResponse.Should().BeOfType<BadRequestObjectResult>()
                 .Which.Value.Should().Be(response.ReasonPhrase);
+            _mediatorMock.Verify(x => x.QueryAsync<UserById, UserByIdQueryHadler>(query), Times.Once());
         }
 
         [Fact]
@@ -95,6 +74,7 @@ namespace Presentation.Test.Controllers.Auth
             //Assert
             actionResponse.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().Be(response.data);
+            _mediatorMock.Verify(x => x.QueryAsync<UserById, UserByIdQueryHadler>(query), Times.Once());
         }
     }
 

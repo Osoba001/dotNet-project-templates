@@ -32,14 +32,14 @@ namespace Auth.Application.MediatR
         /// <summary>
         /// Gets an instance of the authentication service.
         /// </summary>
-        public IAuthService AuthService
+        public IAuthSetup AuthService
         {
             get
             {
-                authService ??= _serviceProvider.GetRequiredService<IAuthService>();
+                authService ??= _serviceProvider.GetRequiredService<IAuthSetup>();
                 return authService;
             }
         }
-        private IAuthService? authService;
+        private IAuthSetup? authService;
     }
 }

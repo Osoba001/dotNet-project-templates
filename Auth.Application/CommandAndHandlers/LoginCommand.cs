@@ -9,7 +9,7 @@ namespace Auth.Application.Commands
     /// <summary>
     /// Command for user login.
     /// </summary>
-    public class LoginCommand : ICommand
+    public class LoginCommand : ITokenCommand
     {
         /// <summary>
         /// Email of the user to be authenticated.
@@ -17,13 +17,13 @@ namespace Auth.Application.Commands
         [EmailAddress]
         public required string Email { get; set; }
         /// <summary>
-        /// Occurs when the user is Created User and return the user token model.
+        /// Occurs when the user has been authenticated and return the user Refresh Token to the subscribers.
         /// </summary>
-        public event EventHandler<string>? CreatedTokenModel;
+        public event EventHandler<string>? GeneratedRefreshToken;
 
         internal virtual void OnAuthenticated(string refreshTokenArgs)
         {
-            CreatedTokenModel?.Invoke(this, refreshTokenArgs);
+            GeneratedRefreshToken?.Invoke(this, refreshTokenArgs);
         }
         /// <summary>
         /// Password of the user to be authenticated.
@@ -58,13 +58,13 @@ namespace Auth.Application.Commands
 
             if (user is null)
             {
-                result.AddError("Invalid login details.");
+                result.AddError(InvalidEmailOrPassword);
                 return result;
             }
 
             if (!service.AuthService.VerifyPassword(command.Password, user))
             {
-                result.AddError("Invalid login details.");
+                result.AddError(InvalidEmailOrPassword);
                 return result;
             }
 

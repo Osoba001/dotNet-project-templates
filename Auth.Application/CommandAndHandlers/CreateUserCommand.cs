@@ -15,7 +15,7 @@ namespace Auth.Application.Commands
     /// <summary>
     /// Represents a command to create a new user.
     /// </summary>
-    public class CreateUserCommand : ICommand
+    public class CreateUserCommand : ITokenCommand
     {
         /// <summary>
         /// The role of the new user.
@@ -54,9 +54,9 @@ namespace Auth.Application.Commands
         /// </summary>
         public event EventHandler<UserArgs>? CreatedUser;
         /// <summary>
-        /// Occurs when the user is Created User and return the user token model.
+        /// Occurs when user has been created and return the user Refresh Token to the subscribers.
         /// </summary>
-        public event EventHandler<string>? CreatedTokenModel;
+        public event EventHandler<string>? GeneratedRefreshToken;
         /// <summary>
         /// Raises the Created user event.
         /// </summary>
@@ -64,7 +64,7 @@ namespace Auth.Application.Commands
         internal virtual void OnCreated(UserArgs UserArgs, string refrestoken)
         {
             CreatedUser?.Invoke(this, UserArgs);
-            CreatedTokenModel?.Invoke(this, refrestoken);
+            GeneratedRefreshToken?.Invoke(this, refrestoken);
         }
     }
 
@@ -80,15 +80,7 @@ namespace Auth.Application.Commands
         /// <param name="service">The service wrapper containing the necessary services and repositories.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>An instance of KOActionResult indicating the result of the command handling.</returns>
-        /// <remarks>
-        /// This method handles the CreateUserCommand asynchronously by first validating the email address and 
-        /// checking if it is already in use. If the email address is valid and not in use, a new UserModel object
-        /// is created with the specified email address, user name, and role, and the password is hashed using the 
-        /// service's PasswordManager method. The new user is then added to the user repository using the AddAndReturn 
-        /// method, and a token is generated using the service's TokenManager method. Finally, the OnCreated method 
-        /// of the CreateUserCommand is called with the newly created user as the argument, and an instance of 
-        /// KOActionResult is returned containing the token as the data property.
-        /// </remarks>
+       
         public async Task<KOActionResult> HandleAsync(CreateUserCommand command, IServiceWrapper service, CancellationToken cancellationToken = default)
         {
             var response=new KOActionResult();
@@ -96,7 +88,7 @@ namespace Auth.Application.Commands
             var user=await service.UserRepo.FindOneByPredicate(x=>x.Email==email);
             if (user is not null)
             {
-                response.AddError("Email is already in used.");
+                response.AddError(EmailAlreadyExist);
                 return response;
             }
             UserModel userModel = new() { Email = email, Role = command.Role, UserName = command.UserName };

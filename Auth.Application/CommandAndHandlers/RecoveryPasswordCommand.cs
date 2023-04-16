@@ -9,7 +9,7 @@ namespace Auth.Application.Commands
     /// <summary>
     /// Represents a command to recover a user's account.
     /// </summary>
-    public class RecoverPasswordCommand : ICommand
+    public class RecoveryPasswordCommand : ICommand
     {
         /// <summary>
         /// The email address of the user to recover the account for.
@@ -36,7 +36,7 @@ namespace Auth.Application.Commands
     /// <summary>
     /// Handles the RecoverPasswordCommand to recover user's password.
     /// </summary>
-    public class RecoveryPasswordHandler : ICommandHandler<RecoverPasswordCommand>
+    public class RecoveryPasswordHandler : ICommandHandler<RecoveryPasswordCommand>
     {
 
         /// <summary>
@@ -46,25 +46,25 @@ namespace Auth.Application.Commands
         /// <param name="service">The service wrapper.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The result of the recover password operation.</returns>
-        public async Task<KOActionResult> HandleAsync(RecoverPasswordCommand command, IServiceWrapper service, CancellationToken cancellationToken = default)
+        public async Task<KOActionResult> HandleAsync(RecoveryPasswordCommand command, IServiceWrapper service, CancellationToken cancellationToken = default)
         {
             var result = new KOActionResult();
             var user = await service.UserRepo.FindOneByPredicate(x => x.Email == command.Email.ToLower().Trim());
 
             if (user is null)
             {
-                result.AddError("user not found.");
+                result.AddError(UserNotFound);
                 return result;
             }
-            if (user.RecoveryPinCreatedTime.AddMinutes(10) < DateTime.UtcNow)
+            if (user.RecoveryPinCreationTime.AddMinutes(10) < DateTime.UtcNow)
             {
-                result.AddError("Session expired.");
+                result.AddError(SessionExpired);
                 return result;
             }
             if(user.PasswordRecoveryPin!=command.RecoveryPin)
             {
-                result.AddError("Invalid Pin.");
-                user.RecoveryPinCreatedTime= DateTime.UtcNow.AddMinutes(-20);
+                result.AddError(IncorrectPin);
+                user.RecoveryPinCreationTime= DateTime.UtcNow.AddMinutes(-20);
                 await service.UserRepo.Update(user);
                 return result;
             }

@@ -22,7 +22,7 @@ namespace Auth.Application.Dependency
         {
             services.AddScoped<IMediatKO,MediatKO>();
             services.AddScoped<IServiceWrapper, ServiceWrapper>();
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAuthSetup, AuthSetup>();
             services.JWTService(secretKey);
             services.AddAuthorization();
             return services;

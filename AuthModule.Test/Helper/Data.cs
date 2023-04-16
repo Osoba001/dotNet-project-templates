@@ -9,23 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Utilities.Constants;
 
-namespace AuthModule.Test.AuthApplication.Handlers.Helper
+namespace AuthModule.Test.Helper
 {
     internal static class Data
     {
-        
-        public static void PasswordManager(string password, UserModel user)
-        {
-            //AuthService server = new(null,null);
-            //server.PasswordManager(password, user);
-            using var hmc = new HMACSHA512();
-            byte[] passwordSalt = hmc.Key;
-            byte[] passwordHash = hmc.ComputeHash(Encoding.ASCII.GetBytes(password));
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-        }
         public static List<UserModel> Users => CreateUsers();
-        public static TokenModelArgs tokenModel = new TokenModelArgs() { AccessToken = Guid.NewGuid().ToString(), RefreshToken = Guid.NewGuid().ToString() };
+        public static TokenModel tokenModel = new TokenModel() { AccessToken = Guid.NewGuid().ToString(), RefreshToken = Guid.NewGuid().ToString() };
         private static List<UserModel> CreateUsers()
         {
             List<UserModel> users = new();
@@ -38,9 +27,6 @@ namespace AuthModule.Test.AuthApplication.Handlers.Helper
                     UserName = Guid.NewGuid().ToString(),
                     Role = Role.User,
                 };
-                PasswordManager("password" + i, user);
-                //AuthService server = new(null,null);
-                //server.PasswordManager(password, user);
                 users.Add(user);
             }
             return users;

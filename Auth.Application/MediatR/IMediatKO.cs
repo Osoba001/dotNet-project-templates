@@ -19,6 +19,17 @@ namespace Auth.Application.MediatR
            where TCommandHandler : ICommandHandler<TCommand>;
 
         /// <summary>
+        /// Executes the given Command using the specified CommandHandler.
+        /// </summary>
+        /// <typeparam name="TCommand">The type of the Command to execute.</typeparam>
+        /// <typeparam name="TCommandHandler">The type of the CommandHandler to use for executing the Command.</typeparam>
+        /// <param name="command">The Command to execute.</param>
+        /// <returns>A Task containing the result of the Command execution.</returns>
+        Task<KOActionResult> ExecuteTokenCommandAsync<TCommand, TCommandHandler>(TCommand command)
+           where TCommand : ITokenCommand
+           where TCommandHandler : ICommandHandler<TCommand>;
+
+        /// <summary>
         /// Executes the given Query using the specified QueryHandler.
         /// </summary>
         /// <typeparam name="TQuery">The type of the Query to execute.</typeparam>

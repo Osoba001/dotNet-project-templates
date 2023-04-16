@@ -21,6 +21,6 @@ namespace Auth.Application.MediatR
         /// <summary>
         /// Authentication service contract
         /// </summary>
-        IAuthService AuthService { get;}
+        IAuthSetup AuthService { get;}
     }
 }

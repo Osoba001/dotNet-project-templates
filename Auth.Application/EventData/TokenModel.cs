@@ -9,7 +9,7 @@ namespace Auth.Application.EventData
     /// <summary>
     /// Represents a model for a JWT token and its refresh token.
     /// </summary>
-    public class TokenModelArgs:EventArgs
+    public class TokenModel:EventArgs
     {
         /// <summary>
         /// Gets or sets the access token value.

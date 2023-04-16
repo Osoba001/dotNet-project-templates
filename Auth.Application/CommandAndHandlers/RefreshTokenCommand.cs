@@ -7,19 +7,22 @@ namespace Auth.Application.Commands
     /// <summary>
     /// Represents a command to refresh an access token.
     /// </summary>
-    public class RefreshTokenCommand : ICommand
+    public class RefreshTokenCommand : ITokenCommand
     {
         /// <summary>
         /// The refresh token associated with the access token to be refreshed.
         /// </summary>
         public required string RefreshToken { get; set; }
 
+        /// <summary>
+        /// Occurs when the user tokens have been Refreshed and return the user Refresh Token to the subscribers.
+        /// </summary>
+        public event EventHandler<string>? GeneratedRefreshToken;
 
-        public event EventHandler<string>? CreatedTokenModel;
 
         internal virtual void OnAuthenticated(string args)
         {
-            CreatedTokenModel?.Invoke(this, args);
+            GeneratedRefreshToken?.Invoke(this, args);
         }
         /// <summary>
         /// Validates the RefreshTokenCommand.
@@ -49,12 +52,12 @@ namespace Auth.Application.Commands
             var user=await service.UserRepo.FindOneByPredicate(x=>x.RefreshToken==command.RefreshToken);
             if(user is null)
             {
-                result.AddError("Invalid Token");
+                result.AddError(InvalidToken);
                 return result;
             }
             if (user.RefreshTokenExpireTime < DateTime.UtcNow)
             {
-                result.AddError("Session expired. Try login again.");
+                result.AddError(SessionExpired);
                 return result;
             }
             var token = await service.AuthService.TokenManager(user);

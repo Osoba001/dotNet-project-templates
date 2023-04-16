@@ -21,4 +21,6 @@ namespace Auth.Application.MediatR
         /// <returns> Task of KOActionResult</returns>
         Task<KOActionResult> HandleAsync(TCommand command, IServiceWrapper service, CancellationToken cancellationToken = default);
     }
+
+
 }

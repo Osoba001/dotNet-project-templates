@@ -25,7 +25,15 @@ namespace Auth.Application.MediatR
             where TCommandHandler : ICommandHandler<TCommand>
             where TCommand : ICommand
         {
-            var handler = (TCommandHandler)Activator.CreateInstance(typeof(TCommandHandler))!;
+            var handler = Activator.CreateInstance<TCommandHandler>();
+            return handler.HandleAsync(command, service);
+        }
+
+        public Task<KOActionResult> ExecuteTokenCommandAsync<TCommand, TCommandHandler>(TCommand command)
+            where TCommand : ITokenCommand
+            where TCommandHandler : ICommandHandler<TCommand>
+        {
+            var handler=Activator.CreateInstance<TCommandHandler>();
             return handler.HandleAsync(command, service);
         }
 

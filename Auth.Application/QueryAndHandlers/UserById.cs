@@ -39,7 +39,7 @@ namespace Auth.Application.QueryAndHandlers
             var resp=await service.UserRepo.FindById(query.Id);
             if (resp == null)
             {
-                result.AddError("User Not found");
+                result.AddError(UserNotFound);
                 return result;
             }
             UserResponse user = resp;

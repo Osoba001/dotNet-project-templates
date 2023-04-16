@@ -13,7 +13,7 @@ namespace Auth.Application.Models
         public required string UserName { get; set; }
 
         /// <summary>
-        /// The role of the user.
+        /// The user type.
         /// </summary>
         public required Role Role { get; set; }
 
@@ -48,12 +48,12 @@ namespace Auth.Application.Models
         public DateTime FalseDeletedDate { get; set; }
 
         /// <summary>
-        /// The date when the user is allowed to set a new password.
+        /// The time when the user is allowed to set a new password.
         /// </summary>
         public DateTime AllowSetNewPassword { get; set; }
 
         /// <summary>
-        /// The date when the refresh token of the user will expire.
+        /// The time when the refresh token of the user will expire.
         /// </summary>
         public DateTime RefreshTokenExpireTime { get; set; }
 
@@ -63,9 +63,9 @@ namespace Auth.Application.Models
         public int PasswordRecoveryPin { get; set; }
 
         /// <summary>
-        /// The date when the password recovery pin was created.
+        /// The time when the password recovery pin was created.
         /// </summary>
-        public DateTime RecoveryPinCreatedTime { get; set; }
+        public DateTime RecoveryPinCreationTime { get; set; }
     }
 
 }
