@@ -32,8 +32,8 @@ namespace AuthModule.Test.AuthApplication.UserQueryHandlers
 
             // Assert
             result.Should().NotBeNull();
-            result.data.Should().NotBeNull();
-            result.data.Should().BeEquivalentTo(usersModel.ConvertUserList());
+            result.Data.Should().NotBeNull();
+            result.Data.Should().BeEquivalentTo(usersModel.ConvertUserList());
         }
 
     }

@@ -33,6 +33,7 @@ namespace Auth.Application.Commands
         /// <summary>
         /// The user name of the new user. This is a required field.
         /// </summary>
+        [MaxLength(100)]
         public required string UserName { get; set; }
 
         /// <summary>
@@ -101,7 +102,7 @@ namespace Auth.Application.Commands
             }
             var tokens = await service.AuthService.TokenManager(result.Item!);
             command.OnCreated(result.Item!, tokens.RefreshToken);
-            response.data= tokens.AccessToken;
+            response.Data= tokens.AccessToken;
             return response;
         }
     }

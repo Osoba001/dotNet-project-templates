@@ -63,7 +63,7 @@ namespace Presentation.Test.Controllers.Auth
         {
             //Arrange
             var response = new KOActionResult();
-            response.data=Guid.NewGuid().ToString();
+            response.Data=Guid.NewGuid().ToString();
 
             _mediatorMock.Setup(x => x.QueryAsync<UserById, UserByIdQueryHadler>(query))
                 .ReturnsAsync(response);
@@ -73,7 +73,7 @@ namespace Presentation.Test.Controllers.Auth
 
             //Assert
             actionResponse.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().Be(response.data);
+                .Which.Value.Should().Be(response.Data);
             _mediatorMock.Verify(x => x.QueryAsync<UserById, UserByIdQueryHadler>(query), Times.Once());
         }
     }

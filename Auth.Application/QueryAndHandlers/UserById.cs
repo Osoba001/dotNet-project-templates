@@ -43,7 +43,7 @@ namespace Auth.Application.QueryAndHandlers
                 return result;
             }
             UserResponse user = resp;
-            result.data = user;
+            result.Data = user;
             return result;
         }
     }

@@ -70,7 +70,7 @@ namespace Auth.Application.Commands
 
             var tokenModel = await service.AuthService.TokenManager(user);
             command.OnAuthenticated(tokenModel.RefreshToken);
-            result.data=tokenModel.AccessToken;
+            result.Data=tokenModel.AccessToken;
             return result;
 
 

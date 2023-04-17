@@ -59,7 +59,7 @@ namespace AuthModule.Test.AuthApplication.UserHandlers
 
             // Assert
             result.Should().NotBeNull();
-            var resToken = result.data as string;
+            var resToken = result.Data as string;
             resToken.Should().NotBeNull();
             resToken.Should().BeEquivalentTo(tokenModel.AccessToken);
             result.ReasonPhrase.Should().BeNullOrEmpty();

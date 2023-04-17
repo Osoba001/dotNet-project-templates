@@ -42,7 +42,7 @@ namespace KO.WebAPI.Controllers.Auth
             var result = await _mediator.ExecuteCommandAsync<TCommand, TCommandHandler>(command);
             if (!result.IsSuccess)
                 return BadRequest(result.ReasonPhrase);
-            return Ok(result.data ?? "Success");
+            return Ok(result.Data ?? "Success");
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace KO.WebAPI.Controllers.Auth
             var result = await _mediator.ExecuteCommandAsync<TCommand, TCommandHandler>(command);
             if (!result.IsSuccess)
                 return BadRequest(result.ReasonPhrase);
-            return Ok(result.data ?? "Success");
+            return Ok(result.Data ?? "Success");
         }
 
 
@@ -93,7 +93,7 @@ namespace KO.WebAPI.Controllers.Auth
         {
             var res = await _mediator.QueryAsync<TQuery, TQueryHandler>(query);
             if (res.IsSuccess)
-                return Ok(res.data);
+                return Ok(res.Data);
             else
                 return BadRequest(res.ReasonPhrase);
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Auth.Application.Constants
 {
-    public static class ResponseMessage
+    public static class ReasonPhrase
     {
         public const string InvalidEmailOrPassword = "Email or password is incorrect.";
         public const string RecordNotFound = "Record is not found.";

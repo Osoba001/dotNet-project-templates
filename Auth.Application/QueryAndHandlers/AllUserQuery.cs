@@ -32,7 +32,7 @@ namespace Auth.Application.QueryAndHandlers
         {
             return new KOActionResult
             {
-                data = (await service.UserRepo.GetAll()).ConvertUserList()
+                Data = (await service.UserRepo.GetAll()).ConvertUserList()
             };
         }
     }

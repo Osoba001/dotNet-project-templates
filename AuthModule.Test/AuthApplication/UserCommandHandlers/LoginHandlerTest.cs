@@ -77,7 +77,7 @@ namespace AuthModule.Test.AuthApplication.UserHandlers
             //Assert
             result.Should().NotBeNull();
             result.IsSuccess.Should().BeTrue();
-            result.data.Should().BeEquivalentTo(tokenModel.AccessToken);
+            result.Data.Should().BeEquivalentTo(tokenModel.AccessToken);
             mockService.Verify(s => s.UserRepo.FindOneByPredicate(It.IsAny<Expression<Func<UserModel, bool>>>()), Times.Once());
             mockService.Verify(s => s.AuthService.VerifyPassword(It.IsAny<string>(), It.IsAny<UserModel>()), Times.Once());
             mockService.Verify(s => s.AuthService.TokenManager(It.IsAny<UserModel>()), Times.Once());

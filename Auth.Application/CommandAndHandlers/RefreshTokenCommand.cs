@@ -62,7 +62,7 @@ namespace Auth.Application.Commands
             }
             var token = await service.AuthService.TokenManager(user);
             command.OnAuthenticated(token.RefreshToken);
-            result.data = token.AccessToken;
+            result.Data = token.AccessToken;
             return result;
         }
     }

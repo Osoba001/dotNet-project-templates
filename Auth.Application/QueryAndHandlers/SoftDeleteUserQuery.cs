@@ -34,7 +34,7 @@ namespace Auth.Application.QueryAndHandlers
         {
             return new KOActionResult
             {
-                data = (await service.UserRepo.IgnorQueryFilter(x => x.IsFalseDeleted)).ConvertUserList()
+                Data = (await service.UserRepo.IgnorQueryFilter(x => x.IsFalseDeleted)).ConvertUserList()
             };
         }
     }

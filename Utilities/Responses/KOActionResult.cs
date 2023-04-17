@@ -44,7 +44,7 @@ namespace Utilities.Responses
             }
             return er.ToString();
         }
-        public object? data { get; set; }
+        public object? Data { get; set; }
     }
     /// <summary>
     /// A generic action result used when a type is required in the result and the type must be a class

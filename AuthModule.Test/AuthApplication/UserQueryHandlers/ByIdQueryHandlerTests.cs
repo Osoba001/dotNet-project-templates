@@ -38,7 +38,7 @@ namespace AuthModule.Test.AuthApplication.UserQueryHandlers
             // Assert
             result.Should().NotBeNull();
             result.ReasonPhrase.Should().Contain(UserNotFound);
-            result.data.Should().BeNull();
+            result.Data.Should().BeNull();
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace AuthModule.Test.AuthApplication.UserQueryHandlers
             // Assert
             result.Should().NotBeNull();
             result.ReasonPhrase.Should().BeEmpty();
-            result.data.Should().BeEquivalentTo(userResponse);
+            result.Data.Should().BeEquivalentTo(userResponse);
         }
 
 
