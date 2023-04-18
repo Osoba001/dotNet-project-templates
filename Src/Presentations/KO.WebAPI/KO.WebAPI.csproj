@@ -17,8 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Auth.Application\Auth.Application.csproj" />
-    <ProjectReference Include="..\Auth.Persistence\Auth.Persistence.csproj" />
+    <ProjectReference Include="..\..\Modules\AuthModule\Auth.Application\Auth.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\AuthModule\Auth.Persistence\Auth.Persistence.csproj" />
+    <ProjectReference Include="..\..\ShareResource\Utilities\Utilities.csproj" />
   </ItemGroup>
 
 </Project>

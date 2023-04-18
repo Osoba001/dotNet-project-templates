@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Utilities.Responses;
 
-namespace Presentation.Test.Controllers.Auth
+namespace WebApiPresentation.Test.Controllers.Auth
 {
     public class KOControllerBaseTest
     {
@@ -20,7 +20,7 @@ namespace Presentation.Test.Controllers.Auth
             _mediatorMock = new Mock<IMediatKO>();
             _controller = new AuthControllerBase(_mediatorMock.Object);
         }
-        
+
         [Fact]
         public async void ExecuteAsync_ValidCommand_ReturnsOkWithResultData()
         {
@@ -46,11 +46,11 @@ namespace Presentation.Test.Controllers.Auth
             var response = new KOActionResult();
             response.AddError("Not successfull.");
 
-            _mediatorMock.Setup(x=>x.QueryAsync<UserById,UserByIdQueryHadler>(query))
+            _mediatorMock.Setup(x => x.QueryAsync<UserById, UserByIdQueryHadler>(query))
                 .ReturnsAsync(response);
 
             //Act
-           var actionResponse= await _controller.QueryAsync<UserById,UserByIdQueryHadler>(query);
+            var actionResponse = await _controller.QueryAsync<UserById, UserByIdQueryHadler>(query);
 
             //Assert
             actionResponse.Should().BeOfType<BadRequestObjectResult>()
@@ -63,7 +63,7 @@ namespace Presentation.Test.Controllers.Auth
         {
             //Arrange
             var response = new KOActionResult();
-            response.Data=Guid.NewGuid().ToString();
+            response.Data = Guid.NewGuid().ToString();
 
             _mediatorMock.Setup(x => x.QueryAsync<UserById, UserByIdQueryHadler>(query))
                 .ReturnsAsync(response);
@@ -78,5 +78,5 @@ namespace Presentation.Test.Controllers.Auth
         }
     }
 
-    
+
 }

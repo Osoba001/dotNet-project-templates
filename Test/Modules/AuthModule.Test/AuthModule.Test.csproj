@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -25,7 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KO.WebAPI\KO.WebAPI.csproj" />
+    <Folder Include="AuthPersistence\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Src\Modules\AuthModule\Auth.Application\Auth.Application.csproj" />
   </ItemGroup>
 
 </Project>
