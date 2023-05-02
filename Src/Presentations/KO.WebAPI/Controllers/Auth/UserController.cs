@@ -2,6 +2,7 @@
 using Auth.Application.EventData;
 using Auth.Application.MediatR;
 using Auth.Application.QueryAndHandlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.Constants;
@@ -13,6 +14,7 @@ namespace KO.WebAPI.Controllers.Auth
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : AuthControllerBase
     {
         /// <summary>
@@ -26,6 +28,7 @@ namespace KO.WebAPI.Controllers.Auth
         /// </summary>
         /// <param name="user">The command object containing user information.</param>
         /// <returns>An <see cref="IActionResult"/> object representing the HTTP response to the request.</returns>
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand user)
         {
@@ -40,6 +43,7 @@ namespace KO.WebAPI.Controllers.Auth
         /// </summary>
         /// <param name="user">The command object containing user information.</param>
         /// <returns>An <see cref="IActionResult"/> object representing the HTTP response to the request.</returns>
+        [Authorize(Roles= "SuperAdmin")]
         [HttpPost("admin")]
         public async Task<IActionResult> CreateAddmin([FromBody] CreateUserCommand user)
         {
@@ -54,6 +58,7 @@ namespace KO.WebAPI.Controllers.Auth
         /// <param name="user">The command object containing user information.</param>
         /// <returns>An <see cref="IActionResult"/> object representing the HTTP response to the request.</returns>
         [HttpPost("Super-admin")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> CreateSuperAddmin([FromBody] CreateUserCommand user)
         {
             user.Role = Role.SuperAdmin;
@@ -66,6 +71,7 @@ namespace KO.WebAPI.Controllers.Auth
         /// <param name="login">The command object containing login information.</param>
         /// <returns>An <see cref="IActionResult"/> object representing the HTTP response to the request.</returns>
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginCommand login)
         {
             return await ExecuteTokenAsync<LoginCommand, LoginHandler>(login);
@@ -89,6 +95,7 @@ namespace KO.WebAPI.Controllers.Auth
         /// <param name="forgetPassword">The command object containing the user's email.</param>
         /// <returns>An <see cref="IActionResult"/> object representing the HTTP response to the request.</returns>
         [HttpPost("forget-password")]
+        [AllowAnonymous]
         public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordCommand forgetPassword)
         {
             return await ExecuteAsync<ForgetPasswordCommand, ForgetPasswordHandler>(forgetPassword);
@@ -100,6 +107,7 @@ namespace KO.WebAPI.Controllers.Auth
         /// <param name="recoverPassword">The command for recovering a password.</param>
         /// <returns>The result of executing the recovery password command.</returns>
         [HttpPost("recover-password")]
+        [AllowAnonymous]
         public async Task<IActionResult> RecoverPassword([FromBody] RecoveryPasswordCommand recoverPassword)
         {
             return await ExecuteAsync<RecoveryPasswordCommand, RecoveryPasswordHandler>(recoverPassword);
@@ -110,6 +118,7 @@ namespace KO.WebAPI.Controllers.Auth
         /// </summary>
         /// <param name="setNewPassword">The command for setting a new password.</param>
         /// <returns>The result of executing the set new password command.</returns>
+        [AllowAnonymous]
         [HttpPost("set-new-password")]
         public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordCommand setNewPassword)
         {
@@ -168,6 +177,7 @@ namespace KO.WebAPI.Controllers.Auth
         /// Get all users in the database.
         /// </summary>
         /// <returns>The result of executing the all user query.</returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> AllUsers()
         {

@@ -72,7 +72,7 @@ namespace AuthModule.Test.AuthApplication.AuthSetup
         }
 
         [Fact]
-        public async Task TokenManager_Should_Return_Tokens_And_Update_User()
+        public async Task TokenManager_ReturnTokens_And_Update_User()
         {
             // Arrange
             var user = Users[0];
