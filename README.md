@@ -1,5 +1,5 @@
 # dotNet-project-templates
-Since the release of .Net 6, Renaming solution has become very easy. For this, I created a WebApi project template in .Net 7 with complete unit test and xml doc that has all the basic non-requirement functions in building a modular low coupling and high cohension application. 
+Since the release of .Net 6, Renaming solution has become very easy. For this, I created a WebApi project template in .Net 7 with complete unit test and xml doc that has all the basic non-functional requirement in building a modularized low coupling and high cohension application. 
 This can save time and help to focus on the functional requirement while starting a new project.  JWT auth Module is included.
 To use this template, all you need to do is 
 1) Right click on the solunction name (KOProject.sln) and rename it to your project.
